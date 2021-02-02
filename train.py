@@ -31,7 +31,8 @@ class UserError(Exception):
 def setup_training_options(
     # General options (not included in desc).
     gpus       = None, # Number of GPUs: <int>, default = 1 gpu
-    snap       = None, # Snapshot interval: <int>, default = 50 ticks
+    snap       = None, # Snapshot interval: <int>, default = 4 ticks
+    imgsnap    = None, # Image snapshot interval: <int>, default = 4 ticks
 
     # Training dataset.
     data       = None, # Training dataset (required): <path>
@@ -89,11 +90,16 @@ def setup_training_options(
     args.num_gpus = gpus
 
     if snap is None:
-        snap = 50
+        snap = 4
     assert isinstance(snap, int)
     if snap < 1:
         raise UserError('--snap must be at least 1')
-    args.image_snapshot_ticks = snap
+    if imgsnap is None:
+        imgsnap = snap
+    assert isinstance(imgsnap, int)
+    if imgsnap < 1:
+        raise UserError('--imgsnap must be at least 1')
+    args.image_snapshot_ticks = imgsnap
     args.network_snapshot_ticks = snap
 
     # ---------------------------------------------
@@ -593,7 +599,8 @@ def main():
     group = parser.add_argument_group('general options')
     group.add_argument('--outdir', help='Where to save the results (required)', required=True, metavar='DIR')
     group.add_argument('--gpus', help='Number of GPUs to use (default: 1 gpu)', type=int, metavar='INT')
-    group.add_argument('--snap', help='Snapshot interval (default: 50 ticks)', type=int, metavar='INT')
+    group.add_argument('--snap', help='Snapshot interval (default: 4 ticks)', type=int, metavar='INT')
+    group.add_argument('--imgsnap', help='Snapshot interval (default: 4 ticks)', type=int, metavar='INT')
     group.add_argument('--seed', help='Random seed (default: %(default)s)', type=int, default=1000, metavar='INT')
     group.add_argument('-n', '--dry-run', help='Print training options and exit', action='store_true', default=False)
 
