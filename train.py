@@ -504,9 +504,9 @@ def run_training(outdir, seed, dry_run, **hyperparam_options):
 
     # Print options.
     print()
-    print('Training options:')
-    print(json.dumps(training_options, indent=2))
-    print()
+#    print('Training options:')
+#    print(json.dumps(training_options, indent=2))
+#    print()
     print(f'Output directory:  {training_options.run_dir}')
     print(f'Training data:     {training_options.train_dataset_args.path}')
     print(f'Training length:   {training_options.total_kimg} kimg')
