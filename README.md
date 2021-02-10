@@ -1,3 +1,6 @@
+## Fork with minor changes from dvschultz/stylegan2-ada
+Here is the [original version](https://github.com/dvschultz/stylegan2-ada).
+
 ## PyTorch notice
 I’ll likely be moving all features from this repo to the [PyTorch version](https://github.com/dvschultz/stylegan2-ada-pytorch). That will take time, so until then this remains the best repo to use for full features.
 
