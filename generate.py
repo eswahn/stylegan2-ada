@@ -747,6 +747,7 @@ def main():
     parser_generate_images.add_argument('--save_vector', dest='save_vector', action='store_true', help='also save vector in .npy format')
     parser_generate_images.add_argument('--fixnoise', action='store_true', help='generate images using fixed noise (more accurate for interpolations)')
     parser_generate_images.add_argument('--jpg_quality', type=int, help='Quality compression for JPG exports (1 to 95), keep default value to export as PNG', default=0)
+    parser_generate_images.add_argument('--dlatents', dest='dlatents_npz', help='Generate images for saved dlatents')
     parser_generate_images.set_defaults(func=generate_images)
 
     parser_truncation_traversal = subparsers.add_parser('truncation-traversal', help='Generate truncation walk')
