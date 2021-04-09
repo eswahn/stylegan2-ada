@@ -688,7 +688,7 @@ def create_celeba(tfrecord_dir, celeba_dir, cx=89, cy=121):
 
 #----------------------------------------------------------------------------
 
-def create_from_images(tfrecord_dir, image_dir, shuffle):
+def create_from_images(tfrecord_dir, image_dir, shuffle, force_channels):
     print('Loading images from "%s"' % image_dir)
     image_filenames = sorted(glob.glob(os.path.join(image_dir, '**/*.*'), recursive=True))
     if len(image_filenames) == 0:
@@ -697,6 +697,8 @@ def create_from_images(tfrecord_dir, image_dir, shuffle):
     img = np.asarray(PIL.Image.open(image_filenames[0]))
     resolution = img.shape[0]
     channels = img.shape[2] if img.ndim == 3 else 1
+    if force_channels:
+        channels = force_channels
     if img.shape[1] != resolution:
         error('Input images must have the same width and height')
     if resolution != 2 ** int(np.floor(np.log2(resolution))):
@@ -707,7 +709,12 @@ def create_from_images(tfrecord_dir, image_dir, shuffle):
     with TFRecordExporter(tfrecord_dir, len(image_filenames)) as tfr:
         order = tfr.choose_shuffled_order() if shuffle else np.arange(len(image_filenames))
         for idx in range(order.size):
-            img = np.asarray(PIL.Image.open(image_filenames[order[idx]]))
+            img = PIL.Image.open(image_filenames[order[idx]])
+            if force_channels == 1:
+                img = img.convert('L')
+            if force_channels == 3:
+                img = img.convert('RGB')
+            img = np.asarray(img)
             if channels == 1:
                 img = img[np.newaxis, :, :] # HW => CHW
             else:
@@ -1169,6 +1176,7 @@ def execute_cmdline(argv):
     p.add_argument(     'tfrecord_dir',     help='New dataset directory to be created')
     p.add_argument(     'image_dir',        help='Directory containing the images')
     p.add_argument(     '--shuffle',        help='Randomize image order (default: 1)', type=int, default=1)
+    p.add_argument(     '--force_channels', help='Force image channels (default: 0 = False)', type=int, default=0)
 
     p = add_command(    'create_from_images_raw',
                     "Create dataset from a directory full of images. Please be careful"
