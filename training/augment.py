@@ -493,7 +493,7 @@ def augment_pipeline(
     # ------------------------------
 
     # Execute if the transform is not identity.
-    if C is not I_4:
+    if C is not I_4 and channels < 4:
         images = tf.reshape(images, [batch, channels, height * width])
         if channels == 3:
             images = C[:, :3, :3] @ images + C[:, :3, 3:]
